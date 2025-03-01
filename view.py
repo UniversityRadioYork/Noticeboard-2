@@ -35,6 +35,7 @@ myradio_url = os.environ.get('MYRADIO_URL', "https://www.ury.org.uk/api/v2/")
 #creates an app and scheduler thread
 class Config:
     SCHEDULER_API_ENABLED = True
+    PREFERRED_URL_SCHEME = 'https'
 
 app = Flask(__name__)
 app.config.from_object(Config())
