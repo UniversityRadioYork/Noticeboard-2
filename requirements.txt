@@ -1,0 +1,8 @@
+Flask
+requests
+gevent
+pytz
+PyJWT
+flask-wtf
+apscheduler
+Flask-APScheduler

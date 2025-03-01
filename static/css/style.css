@@ -1,0 +1,134 @@
+:root {
+	--ury-color: rgba(0, 42, 146, 0.9);
+	--text-color: #ffffff;
+}
+
+@font-face {
+	font-family: "Raleway";
+	src: url("Raleway-VariableFont_wght.ttf") format("truetype");
+}
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	font-family: Raleway;
+	font-weight: 400;
+	color: var(--text-color);
+	background-image: url("/static/images/backgroundtest.gif");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: 100% 100%;
+}
+
+h1 {
+	margin: 0px;
+	font-weight: 700;
+}
+
+h2 {
+	margin: 5px 5px 15px 5px;
+	font-weight: 700;
+}
+
+h3 {
+	margin: 5px;
+	font-weight: 600;
+}
+
+h4 {
+	font-weight: 600;
+}
+
+p {
+	margin: 5px;
+}
+
+a {
+	color: inherit; /* blue colors for links too */
+	text-decoration: inherit; /* no underline */
+}
+
+.container {
+	display: flex;
+	flex-flow: row;
+	align-items: stretch;
+	min-height: 100%;
+	min-width: 100%;
+}
+
+.thincolumn,
+.thickcolumn {
+	width: 30%;
+	min-height: 100%;
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+}
+
+.thickcolumn {
+	width: 40%;
+}
+
+.contentbox {
+	border-radius: 1.25em;
+	background-color: var(--ury-color);
+	padding: 20px;
+	margin: 5%;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	filter: blur();
+}
+
+.showimg {
+	border-radius: 25px;
+	width: 70%;
+	min-width: 70%;
+	aspect-ratio: 1 / 1;
+	opacity: 2 !important;
+}
+
+.showdesc {
+	display: block; /* or inline-block */
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	overflow: hidden;
+	max-height: 8.4em;
+	line-height: 1.2em;
+}
+
+.outer {
+}
+
+.inner {
+	position: absolute;
+	opacity: 1;
+	transition: opacity 1s;
+}
+
+.showtime {
+	margin: 5px;
+}
+
+#eventdesc {
+	display: block; /* or inline-block */
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	overflow: hidden;
+	max-height: 3.7em;
+	line-height: 1.2em;
+}
+
+.parent {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+.parent div {
+	grid-row-start: 1;
+	grid-column-start: 1;
+	opacity: 1;
+	transition: opacity 1s;
+}
