@@ -103,7 +103,7 @@ def edit():
         form = Forms.buildEditForm()
         if form.is_submitted():
             json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
-            return redirect('/')
+            return "Content Updated!"
         return render_template('edit.html', title='EditNoticeboard', form=form)
     else:
         return redirect("https://ury.org.uk/myradio/MyRadio/jwt?redirectto="+notice_url+"auth/", code=302)
