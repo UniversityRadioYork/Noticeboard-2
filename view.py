@@ -86,10 +86,14 @@ def verifySession(session):
 def index():
     return render_template('index.html')
 
-#for if you just want the backgrounds
+#just background
+@app.route("/noboard/<start>")
+def noboardstart(start):
+    return render_template('noboard.html', start=start)
+
 @app.route("/noboard")
 def noboard():
-    return render_template('noboard.html')
+    return render_template('noboard.html', start=1)
 
 #either redirects the user to myradio to signing (see auth) or renders a flask-wtf form or stores the values from a submitted form
 @app.route("/edit", methods=['GET', 'POST'])
@@ -97,7 +101,7 @@ def edit():
     if verifySession(session):
         form = Forms.buildEditForm()
         if form.is_submitted():
-            json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data)
+            json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
             return redirect('/')
         return render_template('edit.html', title='EditNoticeboard', form=form)
     else:
@@ -180,6 +184,12 @@ def userdata():
         "showlabel1": show_label,
         "showlabel2": show_label
     }
+
+#returns the frequency the page should refresh
+@app.route("/refreshtime")
+def getrefresh():
+    refresh = json_db.get_refresh()
+    return {"refresh": refresh}
 
 #runs all the myradio requests before serving the webpage
 #comment this out if you want the app to start faster

@@ -27,6 +27,7 @@ class Jsondb:
             data["meetinghtml"] = "<p>Station Meetings Monday at 7PM, in V/N/123a.</p>\n<p>Production Meetings Monday at 8PM, in V/N/123a.</p>"
             data["committeehtml"] = "<h1>Join our Committee</h1>\n<p>To run for a role just send an email to ury@yorksu.org</p>"
             data["showlabel"] = "Your Next Listen?"
+            data["refresh"] = "0"
             data["openroles"] = "{}"
             data["nextevent"] = "{}"
             data["recentshows"] = "[]"
@@ -41,7 +42,7 @@ class Jsondb:
         with open("/opt/notice.json", 'w') as file:
             json.dump(data, file)
 
-    def set_userdata(self, brokenlabel, brokenhtml, joinlabel, joinhtml, listenlabel, listenhtml, extralabel, extrahtml, welfarelabel, welfarehtml, bannerlabel, meetinglabel, meetinghtml, committeehtml, showlabel):
+    def set_userdata(self, brokenlabel, brokenhtml, joinlabel, joinhtml, listenlabel, listenhtml, extralabel, extrahtml, welfarelabel, welfarehtml, bannerlabel, meetinglabel, meetinghtml, committeehtml, showlabel, refresh):
         data = self.get_data()
         data["brokenlabel"] = brokenlabel
         data["brokenhtml"] = brokenhtml
@@ -58,6 +59,7 @@ class Jsondb:
         data["meetinghtml"] = meetinghtml
         data["committeehtml"] = committeehtml
         data["showlabel"] = showlabel
+        data["refresh"] = refresh
         self.save_data(data)
 
     def set_openroles(self, openroles):
@@ -146,3 +148,7 @@ class Jsondb:
     def get_showlabel(self):
         data = self.get_data()
         return data["showlabel"]
+
+    def get_refresh(self):
+        data = self.get_data()
+        return data["refresh"]

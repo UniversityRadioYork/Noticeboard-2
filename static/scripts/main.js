@@ -1,6 +1,8 @@
 var swapshow = false;
 var shownshow = 1;
 var shownpos = 2;
+var refreshtime = 0;
+var refs = 0;
 
 //these functions just make calls to the api and then trigger the corresponding edit function.
 //they get called way down at the bottom of the file in the main loop
@@ -35,6 +37,18 @@ async function getuserdata() {
 		})
 		.then((data) => {
 			editcontent(data);
+		})
+		.catch((err) => {});
+}
+
+async function getrefresh() {
+	const api_url = "/refreshtime";
+	fetch(api_url)
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			editrefresh(data);
 		})
 		.catch((err) => {});
 }
@@ -102,7 +116,6 @@ function editevent(eventinfo) {
 //this one is the same except with a loop
 function editcontent(contentinfo) {
 	try {
-		console.log(contentinfo);
 		for (const key in contentinfo) {
 			document.getElementById(key).innerHTML = contentinfo[key];
 		}
@@ -123,14 +136,7 @@ function editcontent(contentinfo) {
 //a bit messier because positions are divided into categories
 function editpositions(positioninfo) {
 	try {
-		if (positioninfo.length < 1) {
-			document.getElementById("positions").innerHTML =
-				"<h4>We don't have any vacancies on our committee at the moment but roles can free up at any time so keep your eye out!</h4>";
-			document.getElementById("openpos1").innerHTML = "";
-			document.getElementById("openpos2").innerHTML = "";
-			document.getElementById("openpos3").innerHTML = "";
-			document.getElementById("openpos4").innerHTML = "";
-		} else {
+		if (positioninfo.length > 0) {
 			document.getElementById("positions").innerHTML =
 				"<br><h2>Open Positions:</h2>";
 			let typehtml = {
@@ -156,6 +162,13 @@ function editpositions(positioninfo) {
 				typehtml["Team Deputies"];
 			document.getElementById("openpos4").innerHTML =
 				typehtml["Other Officers"];
+		} else {
+			document.getElementById("positions").innerHTML =
+				"<h4>We don't have any vacancies on our committee at the moment but roles can free up at any time so keep your eye out!</h4>";
+			document.getElementById("openpos1").innerHTML = "";
+			document.getElementById("openpos2").innerHTML = "";
+			document.getElementById("openpos3").innerHTML = "";
+			document.getElementById("openpos4").innerHTML = "";
 		}
 	} catch (err) {
 		document.getElementById("positions").innerHTML =
@@ -164,6 +177,21 @@ function editpositions(positioninfo) {
 		document.getElementById("openpos2").innerHTML = "";
 		document.getElementById("openpos3").innerHTML = "";
 		document.getElementById("openpos4").innerHTML = "";
+	}
+}
+
+//gets the frequency of page refreshing. If its changed resets the refresh time.
+function editrefresh(refreshdata) {
+	try {
+		let reftime = refreshdata["refresh"];
+		reftime = Number(reftime);
+		if (reftime != refreshtime) {
+			refreshtime = reftime;
+			refs = 0;
+		}
+	} catch {
+		refs = 0;
+		refreshtime = 0;
 	}
 }
 
@@ -193,13 +221,21 @@ function rotatepos() {
 			swapped = true;
 		}
 		if (toswap == shownpos) {
-			console.log("noswap");
 			return;
 		}
 	}
 	document.getElementById("openpos" + shownpos).style = "opacity: 0";
 	document.getElementById("openpos" + toswap).style = "opacity: 1";
 	shownpos = toswap;
+}
+
+// every 15 seconds checks if the page should refresh
+function checkrefresh() {
+	if (refreshtime != 0) {
+		if (refreshtime < refs * 15) {
+			window.location.reload();
+		}
+	}
 }
 
 //runs ever 15 seconds
@@ -211,10 +247,14 @@ function updateloop() {
 	getuserdata();
 	getevent();
 	getpositions();
+	refs++;
+	checkrefresh();
+	getrefresh();
 }
 
 getuserdata();
 getpositions();
+getrefresh();
 //populate both show recommendation boxes
 getshow(1);
 getshow(2);

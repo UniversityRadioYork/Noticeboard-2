@@ -24,5 +24,6 @@ class Forms():
             meetinghtml = StringField('Meeting HTML', default=data["meetinghtml"], widget=TextArea())
             committeehtml = StringField('Committee HTML', default=data["committeehtml"], widget=TextArea())
             showlabel = StringField('Show Label', default=data["showlabel"])
+            refresh = StringField('Refresh every (x) seconds. Set to 0 for no updates. To refresh the noticeboard set to a low value and then set back to 0.', default=data["refresh"])
             submit = SubmitField('Edit Noticeboard')
         return EditNotice()

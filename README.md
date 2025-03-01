@@ -8,7 +8,7 @@ You can see it in studio red or noticeboard.ury.org.uk
 
 It uses the myradio api to dynamically update open positions and upcoming events and also to recommend some of our shows.
 
-It also has a backend webpage thing where you can edit the rest of the page.
+It also has a CMS webpage thing where you can edit the rest of the page.
 
 # How do I use it?
 

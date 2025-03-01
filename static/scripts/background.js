@@ -5,13 +5,13 @@
 var current = 2;
 var image1 = Math.floor(Math.random() * 12) + 2;
 //always starts with the ury station background
-var image2 = 1;
+var image2 = startimage;
 var div2 = document.getElementById("sliding-background2");
 var div1 = document.getElementById("sliding-background1");
 div1.style.background =
-	"url('static/images/backgrounds/Campus/" + image1 + ".jpg')";
+	"url('/static/images/backgrounds/Campus/" + image1 + ".jpg')";
 div2.style.background =
-	"url('static/images/backgrounds/Campus/" + image2 + ".jpg')";
+	"url('/static/images/backgrounds/Campus/" + image2 + ".jpg')";
 div2.classList.add("doslide");
 
 //called on animation end
@@ -45,13 +45,13 @@ function transitionfunction() {
 		div1.classList.remove("doslide");
 		div1.classList.remove("doslidemore");
 		div1.style.background =
-			"url('static/images/backgrounds/Campus/" + image1 + ".jpg')";
+			"url('/static/images/backgrounds/Campus/" + image1 + ".jpg')";
 		div1.classList.add("sliding-background");
 	} else {
 		div2.classList.remove("doslide");
 		div2.classList.remove("doslidemore");
 		div2.style.background =
-			"url('static/images/backgrounds/Campus/" + image2 + ".jpg')";
+			"url('/static/images/backgrounds/Campus/" + image2 + ".jpg')";
 		div1.classList.add("sliding-background");
 	}
 }
