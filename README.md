@@ -63,3 +63,7 @@ and if you want it all at once
 ```
 docker run -p 5042:5042 -v plankstore:/opt/ -e MYRADIO_API_KEY='[your_api_key]' noticeboard
 ```
+
+#credits
+
+thank you Jamies Parker-East for helping to take the cool background images
