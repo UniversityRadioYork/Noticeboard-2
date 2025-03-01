@@ -5,12 +5,14 @@ import pytz
 from jsondb import Jsondb
 from datetime import datetime
 
+#class for actually doing myradio stuff
 class MyRadioUpdater:
     def __init__(self, api_url, api_key):
         self.api_url = api_url
         self.api_key = api_key
         self.json_db = Jsondb()
 
+    #chatgpt mostly wrote this bit. Just turns a unix time and duration into a nice string. Used for show recommendations
     def unix_to_uk_time(self, unix_time, duration):
         utc_timezone = pytz.utc
         dt_utc = datetime.fromtimestamp(unix_time, tz=utc_timezone)
@@ -22,6 +24,7 @@ class MyRadioUpdater:
         end_time = int(time_of_day) + duration
         return f"{day_of_week} {time_of_day}:00 - {str(end_time)}:00"
 
+    #similar to the last one and just as AI generated, this one is used for upcoming events
     def convert_to_human_readable(self, datetime_str, end_time):
         dt = datetime.fromisoformat(datetime_str)
         dte = datetime.fromisoformat(end_time)
@@ -33,6 +36,7 @@ class MyRadioUpdater:
         human_readable_str = f"{date_part} {start_time} — {end_time}"
         return human_readable_str
 
+    #sorts roles from id and type. Team distinctions are prioritised.
     def getrolecat(self, teamid, roletype):
         if teamid == 1:
             return "Management"
@@ -43,6 +47,7 @@ class MyRadioUpdater:
         if roletype == "a":
             return "Team Deputies"
 
+    #gets the current week or shows and filters out jukebox
     def getshows(self, week):
         pool = []
         api_url = self.api_url  + "/timeslot/weekschedule/"+str(week)+"?" + self.api_key
@@ -57,6 +62,7 @@ class MyRadioUpdater:
             pool.append({"title": i["title"], "description": i["description"], "time": self.unix_to_uk_time(i["time"], i["duration"]), "art": i["photo"]})
         return pool
 
+    #gets the last n podcasts
     def getpods(self, num):
         pool = []
         api_url = self.api_url + "podcast/allpodcasts?num_results=20&" + self.api_key
@@ -67,24 +73,30 @@ class MyRadioUpdater:
             pool.append({"title": i["title"], "description": i["description"], "time": "Podcast", "art": i["photo"]})
         return pool 
 
+    #Gets the list of open roles. This one is really slow because I didn't want to edit myradio. You could make it much faster by making a new myradio endpoint.
+    #If you know how to do that you know why I didn't and if you don't then just trust me.
     def updateRoles(self):
         try:
+            #gets all the officer permissions
             api_url = self.api_url + "officer/allofficerpositions?" + self.api_key
             response = requests.get(api_url)
             allroles = json.loads(response.text)
-            ret = ""
             currentroles = []
             openroles = []
+            #filters out all the non-comittee positions and old unused permissions
             for key in allroles["payload"]:
                 if key["status"] == "c" and key["type"] in ["h","a"] and key["team"]["status"] == "c":
                     currentroles.append({"id": key["officerid"], "name": key["name"], "type": key["type"], "teamid": key["team"]["teamid"]})
+            #loops through all the roles and makes another request for the current roleholders
             for i in currentroles:
                 pos = 1
+                #some jank stuff to check if the role is for 1 or 2 people
                 if "deputy" in i["name"].lower() or i["id"] in [135,39]:
                     pos = 2
                 api_url = self.api_url + "officer/" + str(i["id"]) + "/currentholders?" + self.api_key
                 response = requests.get(api_url)
                 members = json.loads(response.text)
+                #checks if any roles available
                 incumbants = len(members["payload"])
                 if incumbants < pos:
                     openroles.append({"name": i["name"], "teamid": i["teamid"], "category": self.getrolecat(i["teamid"], i["type"])})
@@ -107,7 +119,7 @@ class MyRadioUpdater:
         except:
             print("Error occured updating recommended shows" , file=sys.stderr)
 
-
+    #just calles the event api
     def updateNextEvent(self):
         try:
             api_url = self.api_url + "event/next?" + self.api_key

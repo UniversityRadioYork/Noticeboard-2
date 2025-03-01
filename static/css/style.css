@@ -16,10 +16,6 @@ body {
 	font-family: Raleway;
 	font-weight: 400;
 	color: var(--text-color);
-	background-image: url("/static/images/backgroundtest.gif");
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: 100% 100%;
 }
 
 h1 {
@@ -69,6 +65,10 @@ a {
 
 .thickcolumn {
 	width: 40%;
+}
+
+.thincolumn {
+	justify-content: center;
 }
 
 .contentbox {

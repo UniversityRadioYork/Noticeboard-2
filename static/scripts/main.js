@@ -2,17 +2,8 @@ var swapshow = false;
 var shownshow = 1;
 var shownpos = 2;
 
-async function getshow(box) {
-	const api_url = "/nextlisten";
-	fetch(api_url)
-		.then((response) => {
-			return response.json();
-		})
-		.then((data) => {
-			editshow(data, box);
-		});
-}
-
+//these functions just make calls to the api and then trigger the corresponding edit function.
+//they get called way down at the bottom of the file in the main loop
 async function getevent() {
 	const api_url = "/nextevent";
 	fetch(api_url)
@@ -48,6 +39,19 @@ async function getuserdata() {
 		.catch((err) => {});
 }
 
+//this one takes a parameter because it could be editing either show box.
+//thats how the fading works btw. its just two elements stacked on top of each other.
+async function getshow(box) {
+	const api_url = "/nextlisten";
+	fetch(api_url)
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			editshow(data, box);
+		});
+}
+
 //I am certain there is a better way to do this but I was too lazy to find it
 function swaponeandtwo(num) {
 	if (num == 1) {
@@ -57,18 +61,7 @@ function swaponeandtwo(num) {
 	}
 }
 
-function brokenshowimg(num) {
-	if (
-		document.getElementById("showart" + num).src !=
-		"/static/images/default_show_profile.png"
-	) {
-		document.getElementById("showart" + num).src =
-			"/static/images/default_show_profile.png";
-	} else {
-		document.getElementById("showart" + num).src = "";
-	}
-}
-
+//the edit functions are all about the same. Take api info and shove it into html. Easy peasy lemon squeezy.
 function editshow(showinfo, box) {
 	try {
 		document.getElementById("showart" + box).src =
@@ -106,12 +99,14 @@ function editevent(eventinfo) {
 	}
 }
 
+//this one is the same except with a loop
 function editcontent(contentinfo) {
 	try {
 		console.log(contentinfo);
 		for (const key in contentinfo) {
 			document.getElementById(key).innerHTML = contentinfo[key];
 		}
+		//there's an optional box and this code checks if that box still exists
 		if (
 			document.getElementById("extralabel").innerHTML == "" &&
 			document.getElementById("extrahtml").innerHTML == ""
@@ -125,6 +120,7 @@ function editcontent(contentinfo) {
 	} catch (err) {}
 }
 
+//a bit messier because positions are divided into categories
 function editpositions(positioninfo) {
 	try {
 		if (positioninfo.length < 1) {
@@ -171,6 +167,7 @@ function editpositions(positioninfo) {
 	}
 }
 
+//gets called ever 15 seconds in the main loop. Alternates between swapping which show is visible and updating the content of the invisible show.
 async function updateshow() {
 	if (swapshow) {
 		var toswap = swaponeandtwo(shownshow);
@@ -183,6 +180,7 @@ async function updateshow() {
 	swapshow = !swapshow;
 }
 
+//rotates through the 4 committee position categories, which is done with 4 boxes stacked on top of each other with the opacity toggled
 function rotatepos() {
 	var toswap = shownpos;
 	var swapped = false;
@@ -204,19 +202,20 @@ function rotatepos() {
 	shownpos = toswap;
 }
 
+//runs ever 15 seconds
 function updateloop() {
+	//swap shows and committee category
 	updateshow();
 	rotatepos();
+	//see if there is any new data
 	getuserdata();
 	getevent();
 	getpositions();
 }
 
-document.getElementById("showart1").onerror = brokenshowimg(1);
-document.getElementById("showart2").onerror = brokenshowimg(2);
-
 getuserdata();
 getpositions();
+//populate both show recommendation boxes
 getshow(1);
 getshow(2);
 getevent();

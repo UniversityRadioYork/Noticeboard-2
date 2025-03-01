@@ -1,7 +1,9 @@
 from pathlib import Path
 import json
 import io
+import sys
 
+#This is the database for the app. its just a json file. Its fine we only store a few hundred lines of text. Probably fine. eh.
 class Jsondb:
     def __init__(self):
         project = Path("/opt/notice.json")

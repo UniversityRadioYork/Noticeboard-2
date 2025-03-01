@@ -3,6 +3,7 @@ from jsondb import Jsondb
 from wtforms.fields import StringField, SubmitField
 from wtforms.widgets import TextArea
 
+#Make a form with flask WTF
 class Forms():
     def buildEditForm():
         jsondb = Jsondb()

@@ -1,0 +1,41 @@
+body,
+html {
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+}
+.sliding-background {
+	position: absolute;
+	background: url("static/images/backgrounds/Campus/1.jpg") repeat-x;
+	background-size: cover !important;
+	background-position: center !important;
+	width: 300% !important; /* Adjust based on your image width */
+	height: 100% !important;
+	transition: opacity 5s;
+	opacity: 1;
+}
+.doslide {
+	animation: slide 120s linear forwards;
+}
+.doslidemore {
+	animation: slidemore 120s linear forwards;
+}
+.dontslide {
+	animation: none;
+}
+@keyframes slide {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-64%);
+	}
+}
+@keyframes slidemore {
+	from {
+		transform: translateX(-64%);
+	}
+	to {
+		transform: translateX(-138%);
+	}
+}

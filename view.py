@@ -15,12 +15,24 @@ from jsondb import Jsondb
 from myradioupdater import MyRadioUpdater
 from flask_apscheduler import APScheduler
 
+#Imports ENV variables
+
+#url to redirect to when using jwt auth
 notice_url = os.environ.get('NOTICE_URL', "http://127.0.0.1:5042/")
-myradio_key = os.environ.get('MYRADIO_SIGNING_KEY', "ooooh you nearly got me!")
-myradio_api = os.environ.get('MYRADIO_API_KEY', "nice try")
+
+#key used for myradio jwt auth
+myradio_key = os.environ.get('MYRADIO_SIGNING_KEY', "dev")
+
+#key used to validate myradio api requests. This is the only thing you will need to edit for development.
+myradio_api = os.environ.get('MYRADIO_API_KEY', "CHANGE_ME")
+
+#I'm not sure if this does anything but i'm scared to delete it
 log_location = os.environ.get('LOG_LOCATION', "/logs/")
+
+#url of the myradio api, change this if you want to test with the myradio dev instance (you don't)
 myradio_url = os.environ.get('MYRADIO_URL', "https://www.ury.org.uk/api/v2/")
 
+#creates an app and scheduler thread
 class Config:
     SCHEDULER_API_ENABLED = True
 
@@ -31,16 +43,22 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-
+#just logs some stuff
 unix_timestamp = (datetime.now() - datetime(1970, 1, 1)).total_seconds()
 print("Starting at " + str(unix_timestamp) , file=sys.stderr)
 
+#important for session stuff
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)  
 
+#formats api key a little
 myradio_apikey = "api_key="+myradio_api
+
+#creates the database object. And by database I mean json file. it works.
 json_db = Jsondb()
 
+#the scheduler thread runs myradio api calls every 15 minutes and stores the result
+#this stops this app from spamming myradio with requests and also makes its own api way faster
 @scheduler.task('interval', id='do_job_1', minutes=15, misfire_grace_time=900)
 def job1():
     myradioupdater = MyRadioUpdater(myradio_url, myradio_apikey)
@@ -52,8 +70,10 @@ def verifyKey(key):
     pattern = re.compile('^[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789]+$')
     return re.search(pattern, key)
 
-#lets you in if you are comp officer
+#lets you in if you are comp officer or have "edit banner" permission or if the app is in dev mode
 def verifySession(session):
+    if myradio_key == "dev":
+        return True
     if ('name' in session and 'uid' in session):
         api_url = myradio_url + "/user/"+str(session["uid"])+"/permissions?" + myradio_apikey
         response = requests.get(api_url)
@@ -66,6 +86,12 @@ def verifySession(session):
 def index():
     return render_template('index.html')
 
+#for if you just want the backgrounds
+@app.route("/noboard")
+def noboard():
+    return render_template('noboard.html')
+
+#either redirects the user to myradio to signing (see auth) or renders a flask-wtf form or stores the values from a submitted form
 @app.route("/edit", methods=['GET', 'POST'])
 def edit():
     if verifySession(session):
@@ -77,6 +103,7 @@ def edit():
     else:
         return redirect("https://ury.org.uk/myradio/MyRadio/jwt?redirectto="+notice_url+"auth/", code=302)
 
+#uses a jwt to authenticate the user then redirects them back to edit
 @app.route('/auth/', methods=['GET'])
 def auth( ):
     args = request.args
@@ -117,6 +144,7 @@ def nextlisten():
         print("Error occured serving next event" , file=sys.stderr)
         return {} 
 
+#reads all the values for the "static" text boxes and spits them out
 @app.route("/userdata")
 def userdata():
     broken_label = json_db.get_brokenlabel()
@@ -153,7 +181,8 @@ def userdata():
         "showlabel2": show_label
     }
 
-
+#runs all the myradio requests before serving the webpage
+#comment this out if you want the app to start faster
 job1()
 
 if __name__ == "__main__":
