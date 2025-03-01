@@ -7,4 +7,4 @@ DATE=$(date +%s)
 
 docker build -t $IMAGE:$DATE .
 docker push $IMAGE:$DATE
-docker service update --image $IMAGE:$DATE noticeboard
+docker service update --image $IMAGE:$DATE noticeboard-2
