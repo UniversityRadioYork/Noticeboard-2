@@ -1,4 +1,4 @@
-IMAGE="evergiven.ury.york.ac.uk:5042/noticeboard"
+IMAGE="evergiven.ury.york.ac.uk:5000/noticeboard"
 CONTAINER="noticeboard"
 PROJECTDIR="/opt/noticeboard"
 LOGDIR="/mnt/logs/"
