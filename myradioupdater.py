@@ -40,7 +40,7 @@ class MyRadioUpdater:
     def getrolecat(self, teamid, roletype):
         if teamid == 1:
             return "Management"
-        if teamid in [10,11]:
+        if teamid in [10,11,20]:
             return "Other Officers"
         if roletype == "h":
             return "Team Heads"
