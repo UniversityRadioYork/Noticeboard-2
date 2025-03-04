@@ -15,10 +15,10 @@ html {
 	opacity: 1;
 }
 .doslide {
-	animation: slide 120s linear forwards;
+	animation: slide 180s linear forwards;
 }
 .doslidemore {
-	animation: slidemore 120s linear forwards;
+	animation: slidemore 180s linear forwards;
 }
 .dontslide {
 	animation: none;
