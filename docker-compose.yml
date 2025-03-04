@@ -6,7 +6,10 @@ services:
     volumes:
       - ./static:/app/static
       - ./templates:/app/templates
+      - plankstore:/opt/
     ports:
       - "5042:5042"
     environment:
       - MYRADIO_API_KEY=${MYRADIO_API_KEY}
+volumes:
+  plankstore:
