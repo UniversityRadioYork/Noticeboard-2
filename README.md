@@ -27,12 +27,9 @@ Then copy `.env.example` to `.env` and fill in your MyRadio API Key (If you don'
 Then, run:
 
 ```
-docker compose up -d
+docker compose up --build
 
 ```
-
-(The -d flag will run the container in the background, omit it if you wish to run the container in the foreground)
-
 
 There you go! you can now view your own beautiful noticeboard at localhost:5042
 Neat!

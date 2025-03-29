@@ -73,6 +73,8 @@ def verifyKey(key):
 
 #lets you in if you are comp officer or have "edit banner" permission or if the app is in dev mode
 def verifySession(session):
+    print(myradio_key, file=sys.stderr)
+    print(myradio_api, file=sys.stderr)
     if myradio_key == "dev":
         return True
     if ('name' in session and 'uid' in session):
@@ -99,11 +101,12 @@ def noboard():
 #either redirects the user to myradio to signing (see auth) or renders a flask-wtf form or stores the values from a submitted form
 @app.route("/edit", methods=['GET', 'POST'])
 def edit():
-    if verifySession(session):
-        form = Forms.buildEditForm()
-        if form.is_submitted():
-            json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
-            return "Content Updated!"
+    print("huge", file=sys.stderr)
+    form = Forms.buildEditForm()
+    if form.is_submitted():
+        json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
+        return "Content Updated!"
+    elif verifySession(session):
         return render_template('edit.html', title='EditNoticeboard', form=form)
     else:
         return redirect("https://ury.org.uk/myradio/MyRadio/jwt?redirectto="+notice_url+"auth/", code=302)
