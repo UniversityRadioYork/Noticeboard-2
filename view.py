@@ -73,8 +73,6 @@ def verifyKey(key):
 
 #lets you in if you are comp officer or have "edit banner" permission or if the app is in dev mode
 def verifySession(session):
-    print(myradio_key, file=sys.stderr)
-    print(myradio_api, file=sys.stderr)
     if myradio_key == "dev":
         return True
     if ('name' in session and 'uid' in session):
