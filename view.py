@@ -99,13 +99,13 @@ def noboard():
 #either redirects the user to myradio to signing (see auth) or renders a flask-wtf form or stores the values from a submitted form
 @app.route("/edit", methods=['GET', 'POST'])
 def edit():
-    print("huge", file=sys.stderr)
-    form = Forms.buildEditForm()
-    if form.is_submitted():
-        json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
-        return "Content Updated!"
-    elif verifySession(session):
-        return render_template('edit.html', title='EditNoticeboard', form=form)
+    if verifySession(session):
+        form = Forms.buildEditForm()
+        if form.is_submitted():
+            json_db.set_userdata(form.brokenlabel.data, form.brokenhtml.data, form.joinlabel.data, form.joinhtml.data, form.listenlabel.data, form.listenhtml.data, form.extralabel.data, form.extrahtml.data, form.welfarelabel.data, form.welfarehtml.data, form.bannerlabel.data, form.meetinglabel.data, form.meetinghtml.data, form.committeehtml.data, form.showlabel.data, form.refresh.data)
+            return "Content Updated!"
+        else:
+            return render_template('edit.html', title='EditNoticeboard', form=form)
     else:
         return redirect("https://ury.org.uk/myradio/MyRadio/jwt?redirectto="+notice_url+"auth/", code=302)
 
@@ -200,6 +200,6 @@ job1()
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5042))
     print("Starting server on port " + str(port) , file=sys.stderr)
-    #app.run(debug=False, host='0.0.0.0', port=port)
-    http_server = WSGIServer(('', port), app)
-    http_server.serve_forever()
+    app.run(debug=False, host='0.0.0.0', port=port)
+    #http_server = WSGIServer(('', port), app)
+    #http_server.serve_forever()
