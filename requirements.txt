@@ -1,6 +1,6 @@
 Flask
 requests
-gevent
+waitress
 pytz
 PyJWT
 flask-wtf
