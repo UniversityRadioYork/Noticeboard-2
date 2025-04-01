@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, session, request
-from gevent.pywsgi import WSGIServer
+from waitress import serve
 import os
 import requests
 import json
@@ -200,6 +200,5 @@ job1()
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5042))
     print("Starting server on port " + str(port) , file=sys.stderr)
-    app.run(debug=False, host='0.0.0.0', port=port)
-    #http_server = WSGIServer(('', port), app)
-    #http_server.serve_forever()
+    #app.run(debug=False, host='0.0.0.0', port=port)
+    serve(app, host='0.0.0.0',port=5042,threads=8)
