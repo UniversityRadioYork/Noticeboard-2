@@ -7,6 +7,9 @@ COPY ./requirements.txt /app/requirements.txt
 # switch working directory
 WORKDIR /app
 
+# download a version of wheel before they broke it
+RUN pip install wheel==0.45.1
+
 # install the dependencies and packages in the requirements file
 RUN pip install -r requirements.txt
 
